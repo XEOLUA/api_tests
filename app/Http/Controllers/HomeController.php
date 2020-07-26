@@ -25,23 +25,36 @@ class HomeController extends Controller
 
         $tests = Test::leftjoin('questions', 'tests.id', '=', 'questions.test_id')
             ->leftjoin('answers', 'tests.id', '=', 'answers.test_id')
-            ->select('tests.name','questions.text_q','answers.answer')
+            ->select('tests.name','questions.text_q','answers.answer','answers.id')
             ->get()->toArray();
-
-//        $tests = $tests->keyBy('tests.id');
-//$tests = $tests->toArray();
 
         $ans = [];
         foreach ($tests as $item){
             $ans[$item['name']]['questions'][]=$item['text_q'];
             $ans[$item['name']]['questions'] = array_unique($ans[$item['name']]['questions']);
-            $ans[$item['name']]['answers'][]=unserialize($item['answer']);
+            $ans[$item['name']]['answers']['id:'.$item['id']]=unserialize($item['answer']);
         }
-//        dd($ans);
 
-//            $test['Questions']=$questions;
             return json_encode($ans);
+    }
 
+    public function stat1(){
+
+        $testsAll = Test::all()->count();
+
+        $testsAns = $tests = Test::join('answers', 'tests.id', '=', 'answers.test_id')
+            ->select('tests.id')->get()->unique()->count();
+
+        $ans = [];
+        $ans['series']['type'] = 'pie';
+        $ans['series']['name'] = 'Quotient tests ans to tests all';
+        $ans['series']['data'] =
+            [
+                ['tests All', $testsAll],
+                ['tests ans', $testsAns],
+            ];
+
+        return json_encode($ans);
     }
 
     public function showtest($test_identifier){
