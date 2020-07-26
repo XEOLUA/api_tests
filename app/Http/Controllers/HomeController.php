@@ -21,6 +21,29 @@ class HomeController extends Controller
         return $this->answerStore($data);
     }
 
+    public function listtestsandanswers(){
+
+        $tests = Test::leftjoin('questions', 'tests.id', '=', 'questions.test_id')
+            ->leftjoin('answers', 'tests.id', '=', 'answers.test_id')
+            ->select('tests.name','questions.text_q','answers.answer')
+            ->get()->toArray();
+
+//        $tests = $tests->keyBy('tests.id');
+//$tests = $tests->toArray();
+
+        $ans = [];
+        foreach ($tests as $item){
+            $ans[$item['name']]['questions'][]=$item['text_q'];
+            $ans[$item['name']]['questions'] = array_unique($ans[$item['name']]['questions']);
+            $ans[$item['name']]['answers'][]=unserialize($item['answer']);
+        }
+//        dd($ans);
+
+//            $test['Questions']=$questions;
+            return json_encode($ans);
+
+    }
+
     public function showtest($test_identifier){
 
         $tests = Test::join('questions', 'tests.id', '=', 'questions.test_id')
