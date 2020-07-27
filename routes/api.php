@@ -25,6 +25,7 @@ Route::middleware(['au'])->group(function () {
     Route::post('admin/create', 'HomeController@createtest');
     Route::get('admin/listtestsandanswers', 'HomeController@listtestsandanswers');
     Route::get('admin/stat1', 'HomeController@stat1');
+    Route::get('admin/stat2', 'HomeController@stat2');
 
     Route::get('admin/list', ['middleware' => 'au', function(){
         $t = new App\Services\ShowTests();

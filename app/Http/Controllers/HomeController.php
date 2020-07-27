@@ -57,6 +57,29 @@ class HomeController extends Controller
         return json_encode($ans);
     }
 
+    public function stat2(){
+
+        $tests = Test::leftjoin('answers', 'tests.id', '=', 'answers.test_id')
+            ->select('tests.name','answers.answer','answers.id')
+            ->get()->toArray();
+
+        $ans = [];
+        foreach ($tests as $item){
+            if($item['id'])$ans[$item['name']]['answers']['id:'.$item['id']]=1;
+             else $ans[$item['name']]['answers']=[];
+        }
+
+//        dd($ans);
+
+        $response = ['title'=>"bar chart"];
+        foreach ($ans as $key => $val){
+            $response['data'][] = ['label'=>$key, 'value'=>count($val['answers'])];
+        }
+//        dd($response);
+
+        return json_encode($response);
+    }
+
     public function showtest($test_identifier){
 
         $tests = Test::join('questions', 'tests.id', '=', 'questions.test_id')
