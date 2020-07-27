@@ -12,15 +12,25 @@ use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
+    /**
+     * @return string
+     */
     public function error(){
         return "You need to know the url questionnaire ... ";
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|string
+     */
     public function testrun(Request $request){
         $data = json_decode($request->getContent(), true);
         return $this->answerStore($data);
     }
 
+    /**
+     * @return false|string
+     */
     public function listtestsandanswers(){
 
         $tests = Test::leftjoin('questions', 'tests.id', '=', 'questions.test_id')
@@ -38,6 +48,9 @@ class HomeController extends Controller
             return json_encode($ans);
     }
 
+    /**
+     * @return false|string
+     */
     public function stat1(){
 
         $testsAll = Test::all()->count();
@@ -57,6 +70,9 @@ class HomeController extends Controller
         return json_encode($ans);
     }
 
+    /**
+     * @return false|string
+     */
     public function stat2(){
 
         $tests = Test::leftjoin('answers', 'tests.id', '=', 'answers.test_id')
@@ -80,6 +96,10 @@ class HomeController extends Controller
         return json_encode($response);
     }
 
+    /**
+     * @param $test_identifier
+     * @return false|string
+     */
     public function showtest($test_identifier){
 
         $tests = Test::join('questions', 'tests.id', '=', 'questions.test_id')
@@ -101,6 +121,10 @@ class HomeController extends Controller
         else return "Test not found";
     }
 
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function createtest(Request $request){
         $data = json_decode($request->getContent(), true);
 
@@ -125,6 +149,10 @@ class HomeController extends Controller
       return 'Test created, test identifier: '.$t->id_crypt;
     }
 
+    /**
+     * @param $data
+     * @return \Illuminate\Http\JsonResponse|string
+     */
     public function answerStore($data)
     {
         $validator = Validator::make($data, [

@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class ShowTests
 {
+    /**
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
   public function list(){
       $list = Test::all();
       TestResource::withoutWrapping();
@@ -16,13 +19,15 @@ class ShowTests
           TestResource::collection($list);
   }
 
+    /**
+     * @param $id
+     * @return TestResource
+     */
   public  function showtest($id){
 
       $t = Test::find($id);
 
       TestResource::withoutWrapping();
       return new TestResource($t);
-
-      return $id;
   }
 }
